@@ -1,4 +1,4 @@
-const characters = "゠アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレワヰヱヲンヺ・ーヽヿ0123456789"
+const characters = "゠asfasdfasdfasdfasdlkjvoimpbowienblskjbpasvone0123456789"
 
 let settings = {
 	color: {
@@ -7,10 +7,10 @@ let settings = {
 		b: 70
 	},
 	rainbowSpeed: 1.75,
-	rainbow: true,
+	rainbow: false,
 	rainbowLightness: 60,
 	rainbowSaturation: 100,
-	speed: 60,
+	speed: 100,
 	size: 12,
 };
 
@@ -19,6 +19,8 @@ let ctx = c.getContext("2d");
 
 let hue;
 let drops;
+let frame;
+let lastDrop = 0;
 
 function updateFromURL() {
 	const urlParams = new URLSearchParams(window.location.search);
@@ -51,47 +53,48 @@ function init() {
 	}
 }
 
-function draw() {
-	// Set fonts
-	ctx.font = settings.size + "px arial";
+function draw(timestamp) {
+	// Check if it's time for a new drop
+	if (timestamp - lastDrop > settings.speed) {
+		lastDrop = timestamp;
 
-	// Fade out the old drops
-	ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-	ctx.fillRect(0, 0, c.width, c.height);
+		// Set fonts
+		ctx.font = settings.size + "px arial";
 
-	// Foreach drop...
-	for (let i = 0; i < drops.length; i++) {
-		// Draw character BG
-		ctx.fillStyle = "rgba(10, 10, 10, 1)";
-		ctx.fillRect(i * settings.size, drops[i] * settings.size, settings.size, settings.size);
+		// Foreach drop...
+		for (let i = 0; i < drops.length; i++) {
+			// Remove only the last character
+			ctx.fillStyle = "rgba(0, 0, 0, 1)";
+			ctx.fillRect(i * settings.size, (drops[i]-1) * settings.size, settings.size, settings.size);
 
-		// Get a character
-		let text = characters[Math.floor(Math.random() * characters.length)];
+			// Get a character
+			let text = characters[Math.floor(Math.random() * characters.length)];
 
-		// Set color
-		if (settings.rainbow) {
-			ctx.fillStyle = `hsl(${hue}, ${settings.rainbowSaturation}%, ${settings.rainbowLightness}%)`;
-		} else {
-			ctx.fillStyle = `rgba(${settings.color.r},${settings.color.g},${settings.color.b})`;
+			// Set color
+			if (settings.rainbow) {
+				ctx.fillStyle = `hsl(${hue}, ${settings.rainbowSaturation}%, ${settings.rainbowLightness}%)`;
+			} else {
+				ctx.fillStyle = `rgba(${settings.color.r},${settings.color.g},${settings.color.b})`;
+			}
+
+			// Draw character
+			ctx.fillText(text, i * settings.size, drops[i] * settings.size);
+
+			// Incrementing Y coordinate
+			drops[i]++;
+
+			// Loop drop (add randomness)
+			if (drops[i] * settings.size > c.height) {
+				drops[i] = Math.floor(Math.random() * -10);
+			}
 		}
 
-		// Draw character
-		ctx.fillText(text, i * settings.size, drops[i] * settings.size);
-
-		// Incrementing Y coordinate
-		drops[i]++;
-
-		// Loop drop (add randomness)
-		if (drops[i] * settings.size > c.height) {
-			drops[i] = Math.floor(Math.random() * -10);
-		}
+		// Update hue
+		hue += settings.rainbowSpeed;
 	}
 
-	// Update hue
-	hue += settings.rainbowSpeed;
-
 	// Request next frame
-	setTimeout(draw, settings.speed);
+	frame = window.requestAnimationFrame(draw);
 }
 
 function livelyPropertyListener(name, val) {
@@ -130,6 +133,6 @@ function hexToRgb(hex) {
 	} : null;
 }
 
-updateFromURL();
+// updateFromURL();
 init();
-draw();
+frame = window.requestAnimationFrame(draw);

@@ -3,7 +3,7 @@
 # Constants
 
 file="config"
-url="https\:\/\/eliteasian123.github.io\/MatrixWallpaper\/src\/"
+url="https\:\/\/levidehaan.github.io\/MatrixWallpaper\/src\/"
 
 # Variables
 
@@ -43,7 +43,7 @@ get_setting "70"
 url_query="$url_query%22b%22%3A$setting%7D%2C"
 
 echo -n "Rainbow [true/false] (Default: true): "
-get_setting "true"
+get_setting "false"
 url_query="$url_query%22rainbow%22%3A$setting%2C"
 
 echo -n "Rainbow Speed [0.25-50.0] (Default: 1.75): "
