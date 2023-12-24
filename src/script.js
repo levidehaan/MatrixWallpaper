@@ -1,4 +1,4 @@
-const characters = "゠asfasdfasdfasdfasdlkjvoimpbowienblskjbpasvone0123456789"
+const characters = "゠アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレワヰヱヲンヺ・ーヽヿ0123456789"
 
 let settings = {
 	color: {
@@ -10,7 +10,7 @@ let settings = {
 	rainbow: false,
 	rainbowLightness: 60,
 	rainbowSaturation: 100,
-	speed: 100,
+	speed: 60,
 	size: 12,
 };
 
@@ -61,6 +61,9 @@ function draw(timestamp) {
 		// Set fonts
 		ctx.font = settings.size + "px arial";
 
+		// Fade out the old drops
+		ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+		ctx.fillRect(0, 0, c.width, c.height);
 		// Foreach drop...
 		for (let i = 0; i < drops.length; i++) {
 			// Remove only the last character
